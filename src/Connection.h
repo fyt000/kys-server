@@ -1,18 +1,17 @@
 #pragma once
 
-#include <asio.hpp>
-#include <asio/spawn.hpp>
+#include <boost\asio.hpp>
 
 // TODO, add base class and refactor go
 
 class HostConnection : public std::enable_shared_from_this<HostConnection> {
 public:
-    HostConnection(asio::ip::tcp::socket socket_in);
+    HostConnection(boost::asio::ip::tcp::socket socket_in);
     void go();
     std::string getName() {
         return name;
     }
-    asio::ip::tcp::socket socket;
+    boost::asio::ip::tcp::socket socket;
 
 private:
     std::string name;
@@ -20,9 +19,9 @@ private:
 
 class ClientConnection : public std::enable_shared_from_this<ClientConnection> {
 public:
-    ClientConnection(asio::ip::tcp::socket socket_in);
+    ClientConnection(boost::asio::ip::tcp::socket socket_in);
     void go();
-    asio::ip::tcp::socket socket;
+    boost::asio::ip::tcp::socket socket;
 private:
     std::string name;
 };

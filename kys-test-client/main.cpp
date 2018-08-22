@@ -1,12 +1,14 @@
 #include <iostream>
 #include <vector>
-#include <asio.hpp>
+#include <boost\asio.hpp>
 #include <thread>
 #include <chrono>
 
 // _WIN32_WINNT=0x0A00
 
+using namespace boost;
 using asio::ip::tcp;
+
 
 int main(int argc, char* argv[])
 {

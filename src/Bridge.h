@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
-#include <asio.hpp>
+#include <boost\asio.hpp>
+#include <boost\asio\spawn.hpp>
 #include <iostream>
 #include "Connection.h"
 
@@ -11,12 +12,12 @@ public:
 
     void go() {
         auto self(shared_from_this());
-        asio::spawn([this, self](asio::yield_context yield) {
+        boost::asio::spawn([this, self](boost::asio::yield_context yield) {
             try {
                 char data[1024];
                 while (host_->socket.is_open() && client_->socket.is_open()) {
-                    std::size_t n = host_->socket.async_read_some(asio::buffer(data), yield);
-                    asio::async_write(client_->socket, asio::buffer(data, n), yield);
+                    std::size_t n = host_->socket.async_read_some(boost::asio::buffer(data), yield);
+                    boost::asio::async_write(client_->socket, boost::asio::buffer(data, n), yield);
                 }
             }
             catch (std::exception& e) {
@@ -26,12 +27,12 @@ public:
                 return;
             }
         });
-        asio::spawn([this, self](asio::yield_context yield) {
+        boost::asio::spawn([this, self](boost::asio::yield_context yield) {
             try {
                 char data[1024];
                 while (host_->socket.is_open() && client_->socket.is_open()) {
-                    std::size_t n = client_->socket.async_read_some(asio::buffer(data), yield);
-                    asio::async_write(host_->socket, asio::buffer(data, n), yield);
+                    std::size_t n = client_->socket.async_read_some(boost::asio::buffer(data), yield);
+                    boost::asio::async_write(host_->socket, boost::asio::buffer(data, n), yield);
                 }
             }
             catch (std::exception& e) {
