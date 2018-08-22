@@ -75,7 +75,7 @@ void ClientConnection::go() {
             socket.close();
             return;
         }
-        bridge->go();
+        if (bridge) bridge->go();
     });
     // (const boost::coroutines::attributes&) boost::coroutines::attributes(2 * 1024 * 1024)
 }
