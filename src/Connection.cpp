@@ -38,7 +38,8 @@ void HostConnection::go() {
                 AwaitingHost::getAwaitingHosts().remove(name);
             return;
         }
-    }, (const boost::coroutines::attributes&) boost::coroutines::attributes(2 * 1024 * 1024));
+    });
+    // (const boost::coroutines::attributes&) boost::coroutines::attributes(2 * 1024 * 1024)
 }
 
 
@@ -75,7 +76,8 @@ void ClientConnection::go() {
             return;
         }
         bridge->go();
-    },  (const boost::coroutines::attributes&) boost::coroutines::attributes(2 * 1024 * 1024));
+    });
+    // (const boost::coroutines::attributes&) boost::coroutines::attributes(2 * 1024 * 1024)
 }
 
 

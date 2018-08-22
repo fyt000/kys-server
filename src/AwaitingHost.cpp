@@ -22,4 +22,5 @@ bool AwaitingHost::enlist(std::shared_ptr<HostConnection> host) {
     auto iter = awaiting_hosts_.find(host->getName());
     if (iter != awaiting_hosts_.end()) return false;
     awaiting_hosts_[host->getName()] = host;
+    return true;
 }
