@@ -10,7 +10,6 @@ public:
         host_(host), client_(client) {}
 
     void go() {
-        // theres probably a bug here with vs2015 and asio, spawn doesn't pass compiler check
         auto self(shared_from_this());
         asio::spawn([this, self](asio::yield_context yield) {
             try {

@@ -62,9 +62,9 @@ void ClientConnection::go() {
             return;
         }
         // try matching with host
-        bool ok = AwaitingHost::getAwaitingHosts().match_host(name, self);
+        auto bridge = AwaitingHost::getAwaitingHosts().match_host(name, self);
         try {
-            int result = ok ? 1 : 0;
+            int result = bridge ? 1 : 0;
             asio::async_write(socket, asio::buffer(&result, sizeof(result)), yield);
         }
         catch (std::exception& e) {
@@ -72,6 +72,7 @@ void ClientConnection::go() {
             socket.close();
             return;
         }
+        bridge->go();
     });
 }
 

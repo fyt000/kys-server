@@ -3,6 +3,8 @@
 #include <asio.hpp>
 #include <asio/spawn.hpp>
 
+// TODO, add base class and refactor go
+
 class HostConnection : public std::enable_shared_from_this<HostConnection> {
 public:
     HostConnection(asio::ip::tcp::socket socket_in);

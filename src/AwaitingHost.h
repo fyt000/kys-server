@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <mutex>
 
+#include "Bridge.h"
 #include "Connection.h"
 
 // should be thread safe
@@ -17,7 +18,7 @@ public:
 
     // Atomically, match with a host or error out
     // work this out later
-    bool match_host(const std::string& name, std::shared_ptr<ClientConnection> client);
+    std::shared_ptr<Bridge> match_host(const std::string& name, std::shared_ptr<ClientConnection> client);
 
 
     // Atomically, add itself or error out

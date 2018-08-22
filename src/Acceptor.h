@@ -10,6 +10,7 @@ public:
         host_acceptor_(io_context_, asio::ip::tcp::endpoint(asio::ip::tcp::v4(), host_port)),
         client_acceptor_(io_context_, asio::ip::tcp::endpoint(asio::ip::tcp::v4(), client_port)) { }
 
+    // TODO refactor
     bool accept_hosts() {
         std::cerr << "start accepting hosts" << std::endl;
         asio::spawn([this](asio::yield_context yield) {
