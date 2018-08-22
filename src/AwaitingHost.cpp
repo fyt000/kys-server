@@ -11,7 +11,7 @@ void AwaitingHost::remove(const std::string& name) {
 std::shared_ptr<Bridge> AwaitingHost::match_host(const std::string& name, std::shared_ptr<ClientConnection> client) {
     std::lock_guard<std::mutex> guard(mutex_);
     auto iter = awaiting_hosts_.find(name);
-    if (iter == awaiting_hosts_.end()) return false;
+    if (iter == awaiting_hosts_.end()) return nullptr;
     auto bridge = std::make_shared<Bridge>(iter->second, client);
     awaiting_hosts_.erase(iter);
     return bridge;
