@@ -1,6 +1,6 @@
 #include <memory>
 #include <iostream>
-#include <asio.hpp>
+#include <boost/asio.hpp>
 #include "AwaitingHost.h"
 #include "Bridge.h"
 
@@ -62,6 +62,7 @@ void AwaitingHost::host_cleanup() {
             it = awaiting_hosts_.erase(it);
             continue;
         }
+	it++;
     }
     /*
     for (auto& it : awaiting_hosts_) {
