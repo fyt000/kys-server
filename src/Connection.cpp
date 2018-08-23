@@ -14,30 +14,17 @@ void HostConnection::go() {
         try {
             int len;
             boost::asio::async_read(socket, boost::asio::buffer(&len, sizeof(len)), yield);
-            std::cerr << "name length " << len << std::endl;
-            std::vector<char> name_buf(len + 1, '\0');
-            boost::asio::async_read(socket, boost::asio::buffer(&name_buf[0], len), yield);
-            name = std::string(&name_buf[0]);
-            std::cerr << "Got host " << name << std::endl;
+            name.resize(len);
+            boost::asio::async_read(socket, boost::asio::buffer(&name[0], len), yield);
+            std::cerr << "host request " << name << std::endl;
         }
         catch (std::exception& e) {
             std::cerr << "host err1 " << e.what() << std::endl;
             socket.close();
             return;
         }
-        // enlist as waiting
-        bool ok = AwaitingHost::getAwaitingHosts().enlist(shared_from_this());
-        try {
-            int result = ok ? 1 : 0;
-            boost::asio::async_write(socket, boost::asio::buffer(&result, sizeof(result)), yield);
-        }
-        catch (std::exception& e) {
-            std::cerr << "host err2 " << e.what() << std::endl;
-            socket.close();
-            if (ok)
-                AwaitingHost::getAwaitingHosts().remove(name);
-            return;
-        }
+        // enlist as waiting (ok message should be sent by awaiting too, synchronously too)
+        bool ok = AwaitingHost::get().enlist(shared_from_this());
     });
     // (const boost::coroutines::attributes&) boost::coroutines::attributes(2 * 1024 * 1024)
 }
@@ -53,11 +40,9 @@ void ClientConnection::go() {
         try {
             int len;
             boost::asio::async_read(socket, boost::asio::buffer(&len, sizeof(len)), yield);
-            std::cerr << "name length " << len << std::endl;
-            std::vector<char> name_buf(len + 1, '\0');
-            boost::asio::async_read(socket, boost::asio::buffer(&name_buf[0], len), yield);
-            name = std::string(&name_buf[0]);
-            std::cerr << "Got client " << name << std::endl;
+            name.resize(len);
+            boost::asio::async_read(socket, boost::asio::buffer(&name[0], len), yield);
+            std::cerr << "client request " << name << std::endl;
         }
         catch (std::exception& e) {
             std::cerr << "client err1 " << e.what() << std::endl;
@@ -65,7 +50,7 @@ void ClientConnection::go() {
             return;
         }
         // try matching with host
-        auto bridge = AwaitingHost::getAwaitingHosts().match_host(name, self);
+        auto bridge = AwaitingHost::get().match_host(name, self);
         try {
             int result = bridge ? 1 : 0;
             boost::asio::async_write(socket, boost::asio::buffer(&result, sizeof(result)), yield);

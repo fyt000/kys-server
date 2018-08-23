@@ -30,9 +30,11 @@ int main() {
     boost::asio::io_context io_context;
 
     try {
-        Acceptor acceptor(io_context, 31111, 31112);
+        Acceptor acceptor(io_context, 31111, 31112, 31113);
         acceptor.accept_hosts();
         acceptor.accept_clients();
+        acceptor.adhoc_responder();
+        acceptor.periodic_cleanup();
 
         // asio::io_service::work work(io_context);
         io_context.run();

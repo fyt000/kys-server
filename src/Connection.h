@@ -8,7 +8,7 @@ class HostConnection : public std::enable_shared_from_this<HostConnection> {
 public:
     HostConnection(boost::asio::ip::tcp::socket socket_in);
     void go();
-    std::string getName() {
+    std::string get_name() {
         return name;
     }
     boost::asio::ip::tcp::socket socket;
