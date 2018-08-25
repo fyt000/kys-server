@@ -14,7 +14,7 @@ public:
         auto self(shared_from_this());
         boost::asio::spawn([this, self](boost::asio::yield_context yield) {
             try {
-                char data[1024];
+                char data[8192];
                 while (host_->socket.is_open() && client_->socket.is_open()) {
                     std::size_t n = host_->socket.async_read_some(boost::asio::buffer(data), yield);
                     boost::asio::async_write(client_->socket, boost::asio::buffer(data, n), yield);
@@ -29,7 +29,7 @@ public:
         });
         boost::asio::spawn([this, self](boost::asio::yield_context yield) {
             try {
-                char data[1024];
+                char data[8192];
                 while (host_->socket.is_open() && client_->socket.is_open()) {
                     std::size_t n = client_->socket.async_read_some(boost::asio::buffer(data), yield);
                     boost::asio::async_write(host_->socket, boost::asio::buffer(data, n), yield);
