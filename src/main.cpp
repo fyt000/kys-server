@@ -34,9 +34,7 @@ int main() {
         acceptor.accept_hosts();
         acceptor.accept_clients();
         acceptor.adhoc_responder();
-        acceptor.periodic_cleanup();
 
-        // asio::io_service::work work(io_context);
         io_context.run();
     }
     catch (std::exception & e) {

@@ -19,12 +19,11 @@ void HostConnection::go() {
             std::cerr << "host request " << name << std::endl;
         }
         catch (std::exception& e) {
-            std::cerr << "host err1 " << e.what() << std::endl;
             socket.close();
             return;
         }
-        // enlist as waiting (ok message should be sent by awaiting too, synchronously too)
-        bool ok = AwaitingHost::get().enlist(shared_from_this());
+        // enlist as waiting
+        AwaitingHost::get().enlist(shared_from_this());
     });
     // (const boost::coroutines::attributes&) boost::coroutines::attributes(2 * 1024 * 1024)
 }
@@ -45,7 +44,6 @@ void ClientConnection::go() {
             std::cerr << "client request " << name << std::endl;
         }
         catch (std::exception& e) {
-            std::cerr << "client err1 " << e.what() << std::endl;
             socket.close();
             return;
         }
@@ -56,7 +54,6 @@ void ClientConnection::go() {
             boost::asio::async_write(socket, boost::asio::buffer(&result, sizeof(result)), yield);
         }
         catch (std::exception& e) {
-            std::cerr << "client err2 " << e.what() << std::endl;
             socket.close();
             return;
         }

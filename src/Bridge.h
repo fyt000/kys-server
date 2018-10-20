@@ -13,37 +13,31 @@ public:
     void go() {
         auto self(shared_from_this());
         boost::asio::spawn([this, self](boost::asio::yield_context yield) {
-            try {
-                char data[8192];
-                while (host_->socket.is_open() && client_->socket.is_open()) {
-                    std::size_t n = host_->socket.async_read_some(boost::asio::buffer(data), yield);
-                    boost::asio::async_write(client_->socket, boost::asio::buffer(data, n), yield);
-                }
-            }
-            catch (std::exception& e) {
-                std::cerr << e.what() << std::endl;
-                host_->socket.close();
-                client_->socket.close();
-                return;
-            }
+            relay(host_->socket, client_->socket, yield);
         });
         boost::asio::spawn([this, self](boost::asio::yield_context yield) {
-            try {
-                char data[8192];
-                while (host_->socket.is_open() && client_->socket.is_open()) {
-                    std::size_t n = client_->socket.async_read_some(boost::asio::buffer(data), yield);
-                    boost::asio::async_write(host_->socket, boost::asio::buffer(data, n), yield);
-                }
-            }
-            catch (std::exception& e) {
-                std::cerr << e.what() << std::endl;
-                host_->socket.close();
-                client_->socket.close();
-                return;
-            }
+            relay(client_->socket, host_->socket, yield);
         });
     }
+
 private:
+    void relay(boost::asio::ip::tcp::socket& from_socket, boost::asio::ip::tcp::socket& to_socket,
+        boost::asio::yield_context yield) {
+        try {
+            char data[8192];
+            while (from_socket.is_open() && to_socket.is_open()) {
+                std::size_t n = from_socket.async_read_some(boost::asio::buffer(data), yield);
+                boost::asio::async_write(to_socket, boost::asio::buffer(data, n), yield);
+            }
+        }
+        catch (std::exception& e) {
+            std::cerr << e.what() << std::endl;
+            from_socket.close();
+            to_socket.close();
+            return;
+        }
+    }
+
     // single threaded, no need for strand, fix it later
     // asio::io_context::strand strand_;
     std::shared_ptr<HostConnection> host_;
