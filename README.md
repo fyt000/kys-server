@@ -1,5 +1,5 @@
 # kys-server
-Server for kys-cpp-battle-mod https://github.com/scarsty/kys-cpp/tree/battle-mod
+Server for kys-cpp https://github.com/scarsty/kys-cpp/
 
 Basically a TCP relay between 2 clients, clients are matched by a string id. Using Boost::asio(and coroutine) as the networking library.
 
