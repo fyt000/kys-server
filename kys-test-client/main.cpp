@@ -40,20 +40,23 @@ int main(int argc, char* argv[])
         // should be 1 on both sides
         asio::read(socket1, asio::buffer(&result, sizeof(result)));
         std::cout << result << std::endl;
+	assert(result == 1);
         asio::read(socket2, asio::buffer(&result, sizeof(result)));
         std::cout << result << std::endl;
+	assert(result == 1);
 
         int rand_data = 42;
         asio::write(socket1, asio::buffer(&rand_data, sizeof(rand_data)));
         int rand_echo;
         asio::read(socket2, asio::buffer(&rand_echo, sizeof(rand_echo)));
         std::cout << rand_echo << std::endl;
+	assert(rand_echo == 42);
 
         asio::write(socket2, asio::buffer(&rand_data, sizeof(rand_data)));
-        rand_echo = 0;
+        rand_echo = 0; // try to that 42 back
         asio::read(socket1, asio::buffer(&rand_echo, sizeof(rand_echo)));
         std::cout << rand_echo << std::endl;
-
+	assert(rand_echo == 42);
 }
 
 {
@@ -68,7 +71,6 @@ int main(int argc, char* argv[])
         asio::connect(socket2, endpoints2);
         std::cerr << "got 2" << std::endl;
 
-
         std::string hello("hello");
         int len = hello.size();
         asio::write(socket2, asio::buffer(&len, sizeof(len)));
@@ -81,8 +83,16 @@ int main(int argc, char* argv[])
         // should be 1 and 0 on both sides
         asio::read(socket1, asio::buffer(&result, sizeof(result)));
         std::cout << result << std::endl;
+	assert(result == 1);
         asio::read(socket2, asio::buffer(&result, sizeof(result)));
         std::cout << result << std::endl;
+	assert(result == 0);
+        std::cout << "sleeping for 6s\n";
+        std::this_thread::sleep_for(std::chrono::seconds(6));
+        // get another 0
+        asio::read(socket1, asio::buffer(&result, sizeof(result)));
+        std::cout << result << std::endl;
+        assert(result == 0);
 }
 
 {
@@ -118,6 +128,7 @@ int main(int argc, char* argv[])
             std::string name;
             name.resize(len);
             socket3.receive_from(asio::buffer(&name[0], len), endpoint);
+            // should get hello, world
             std::cout << name << std::endl;
         }
 }
