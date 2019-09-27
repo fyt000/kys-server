@@ -3,7 +3,6 @@
 #include <boost/asio/spawn.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <iostream>
-#include <chrono>
 #include "Connection.h"
 #include "AwaitingHost.h"
 
@@ -66,8 +65,8 @@ private:
                     acceptor.async_accept(socket, yield);
                     boost::asio::socket_base::keep_alive keep_alive_option(true);
                     socket.set_option(keep_alive_option);
-                    auto client = std::make_shared<Connection>(std::move(socket));
-                    client->go();
+                    auto conn = std::make_shared<Connection>(std::move(socket));
+                    conn->go();
                 }
                 catch (std::exception& e) {
                     socket.close();

@@ -28,7 +28,6 @@ public:
 
 private:
     // I have no intention to make this multi-threaded, I think single core is good enough
-    // std::mutex mutex_;
-    std::unordered_map<std::string, std::shared_ptr<HostConnection>> awaiting_hosts_;
+    std::unordered_map<std::string, std::weak_ptr<HostConnection>> awaiting_hosts_;
 };
 

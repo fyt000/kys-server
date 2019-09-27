@@ -12,6 +12,7 @@ public:
 
     void go() {
         auto self(shared_from_this());
+        host_->stop_timer();
         boost::asio::spawn([this, self](boost::asio::yield_context yield) {
             relay(host_->socket, client_->socket, yield);
         });
@@ -24,7 +25,7 @@ private:
     void relay(boost::asio::ip::tcp::socket& from_socket, boost::asio::ip::tcp::socket& to_socket,
         boost::asio::yield_context yield) {
         try {
-            char data[8192];
+            char data[1024];
             while (from_socket.is_open() && to_socket.is_open()) {
                 std::size_t n = from_socket.async_read_some(boost::asio::buffer(data), yield);
                 boost::asio::async_write(to_socket, boost::asio::buffer(data, n), yield);
