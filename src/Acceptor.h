@@ -65,7 +65,7 @@ private:
                     acceptor.async_accept(socket, yield);
                     boost::asio::socket_base::keep_alive keep_alive_option(true);
                     socket.set_option(keep_alive_option);
-                    auto conn = std::make_shared<Connection>(std::move(socket));
+                    auto conn = std::make_shared<Connection>(io_context_, std::move(socket));
                     conn->go();
                 }
                 catch (std::exception& e) {
