@@ -7,7 +7,7 @@
 #include "Connection.h"
 #include "AwaitingHost.h"
 
-HostConnection::HostConnection(boost::asio::ip::tcp::socket socket_in) : socket(std::move(socket_in)), enlisted_(false), timer_(socket.get_executor()) {
+HostConnection::HostConnection(boost::asio::io_context& ioc, boost::asio::ip::tcp::socket socket_in) : ioc_(ioc), socket(std::move(socket_in)), enlisted_(false), timer_(ioc_) {
 }
 
 void HostConnection::go() {
@@ -56,7 +56,7 @@ HostConnection::~HostConnection() {
     }
 }
 
-ClientConnection::ClientConnection(boost::asio::ip::tcp::socket socket_in) : socket(std::move(socket_in)) {
+ClientConnection::ClientConnection(boost::asio::io_context&, boost::asio::ip::tcp::socket socket_in) : socket(std::move(socket_in)) {
 }
 
 void ClientConnection::go() {
